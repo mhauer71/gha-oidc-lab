@@ -1,28 +1,28 @@
 name: container-scan
-   on:
-     push:
-       branches: [main]
-     workflow_dispatch:
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
 
-   permissions:
-     contents: read
-     security-events: write   # required to upload SARIF results to the Security tab
+permissions:
+  contents: read
+  security-events: write   # required to upload SARIF results to the Security tab
 
-   jobs:
-     scan:
-       runs-on: ubuntu-latest
-       steps:
-         - uses: actions/checkout@v4
-         - name: Build image
-           run: docker build -t myapp:${{ github.sha }} .
-         - name: Scan container with Trivy
-           uses: aquasecurity/trivy-action@master
-           with:
-             image-ref: 'myapp:${{ github.sha }}'
-             format: 'sarif'
-             output: 'trivy-container.sarif'
-             severity: 'CRITICAL,HIGH'
-         - name: Upload scan results
-           uses: github/codeql-action/upload-sarif@v3
-           with:
-             sarif_file: 'trivy-container.sarif'
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t myapp:${{ github.sha }} .
+      - name: Scan container with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'myapp:${{ github.sha }}'
+          format: 'sarif'
+          output: 'trivy-container.sarif'
+          severity: 'CRITICAL,HIGH'
+      - name: Upload scan results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-container.sarif'
