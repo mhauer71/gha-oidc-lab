@@ -5,6 +5,7 @@ permissions:
  contents: read
 jobs:
  assume-role:
+   environment: production
    runs-on: ubuntu-latest
    steps:
      - name: Debug OIDC token claims
